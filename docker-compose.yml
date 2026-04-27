@@ -1,0 +1,109 @@
+services:
+
+  # ── BASES DE DATOS ──────────────────────────────
+
+  db-datos:
+    image: mysql:8.0
+    container_name: db-datos
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: baseorganizacional
+    volumes:
+      - datos-data:/var/lib/mysql
+    networks:
+      - spring-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-kpi:
+    image: mysql:8.0
+    container_name: db-kpi
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: basekpi
+    volumes:
+      - kpi-data:/var/lib/mysql
+    networks:
+      - spring-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-reportes:
+    image: mysql:8.0
+    container_name: db-reportes
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: basereportes
+    volumes:
+      - reportes-data:/var/lib/mysql
+    networks:
+      - spring-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── MICROSERVICIOS ──────────────────────────────
+
+  ms-datos:
+    build: ./msdatos
+    container_name: ms-datos
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-datos:3306/baseorganizacional
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      db-datos:
+        condition: service_healthy
+    networks:
+      - spring-net
+
+  ms-kpi:
+    build: ./mskpi
+    container_name: ms-kpi
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-kpi:3306/basekpi
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      db-kpi:
+        condition: service_healthy
+    networks:
+      - spring-net
+
+  ms-reportes:
+    build: ./msreportes
+    container_name: ms-reportes
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-reportes:3306/basereportes
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      db-reportes:
+        condition: service_healthy
+    networks:
+      - spring-net
+
+# ── VOLÚMENES Y RED ─────────────────────────────
+
+volumes:
+  datos-data:
+  kpi-data:
+  reportes-data:
+
+networks:
+  spring-net:
+    driver: bridge

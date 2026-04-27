@@ -1,0 +1,39 @@
+services:
+
+  db-datos:
+    image: mysql:8.0
+    container_name: db-datos
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: baseorganizacional
+    volumes:
+      - datos-data:/var/lib/mysql
+    networks:
+      - spring-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ms-datos:
+    build: .
+    container_name: ms-datos
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-datos:3306/baseorganizacional
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      db-datos:
+        condition: service_healthy
+    networks:
+      - spring-net
+
+volumes:
+  datos-data:
+
+networks:
+  spring-net:
+    driver: bridge

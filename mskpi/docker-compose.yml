@@ -1,0 +1,39 @@
+services:
+
+  db-kpi:
+    image: mysql:8.0
+    container_name: db-kpi
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: basekpi
+    volumes:
+      - kpi-data:/var/lib/mysql
+    networks:
+      - spring-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ms-kpi:
+    build: .
+    container_name: ms-kpi
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-kpi:3306/basekpi
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      db-kpi:
+        condition: service_healthy
+    networks:
+      - spring-net
+
+volumes:
+  kpi-data:
+
+networks:
+  spring-net:
+    driver: bridge

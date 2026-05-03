@@ -1,0 +1,39 @@
+services:
+
+  db-reportes:
+    image: mysql:8.0
+    container_name: db-reportes
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: basereportes
+    volumes:
+      - reportes-data:/var/lib/mysql
+    networks:
+      - spring-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ms-reportes:
+    build: .
+    container_name: ms-reportes
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-reportes:3306/basereportes
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      db-reportes:
+        condition: service_healthy
+    networks:
+      - spring-net
+
+volumes:
+  reportes-data:
+
+networks:
+  spring-net:
+    driver: bridge

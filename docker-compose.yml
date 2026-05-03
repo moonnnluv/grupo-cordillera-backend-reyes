@@ -50,6 +50,22 @@ services:
       timeout: 5s
       retries: 5
 
+  db-auth:
+    image: mysql:8.0
+    container_name: db-auth
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: baseauth
+    volumes:
+      - auth-data:/var/lib/mysql
+    networks:
+      - spring-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # ── MICROSERVICIOS ──────────────────────────────
 
   ms-datos:
@@ -97,12 +113,46 @@ services:
     networks:
       - spring-net
 
+  ms-auth:
+    build: ./msauth
+    container_name: ms-auth
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-auth:3306/baseauth
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      db-auth:
+        condition: service_healthy
+    networks:
+      - spring-net
+
+  api-gateway:
+    build: ./apigateway
+    container_name: api-gateway
+    ports:
+      - "9090:9090"
+    environment:
+      MS_DATOS_URL: http://ms-datos:8081
+      MS_KPI_URL: http://ms-kpi:8082
+      MS_REPORTES_URL: http://ms-reportes:8083
+      MS_AUTH_URL: http://ms-auth:8084
+    depends_on:
+      - ms-datos
+      - ms-kpi
+      - ms-reportes
+      - ms-auth
+    networks:
+      - spring-net
+
 # ── VOLÚMENES Y RED ─────────────────────────────
 
 volumes:
   datos-data:
   kpi-data:
   reportes-data:
+  auth-data:
 
 networks:
   spring-net:

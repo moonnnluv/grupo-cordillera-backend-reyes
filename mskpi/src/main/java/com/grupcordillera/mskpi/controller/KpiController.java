@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.grupcordillera.mskpi.entity.Kpi;
@@ -55,5 +56,15 @@ public class KpiController {
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         service.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/calcular")
+    public ResponseEntity<Kpi> calcular(
+            @RequestParam String tipo,
+            @RequestParam String nombre,
+            @RequestParam double valorBase,
+            @RequestParam(required = false) String sucursal) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.calcularYGuardar(tipo, nombre, valorBase, sucursal));
     }
 }

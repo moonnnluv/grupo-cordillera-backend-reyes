@@ -16,7 +16,8 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   db-kpi:
     image: mysql:8.0
@@ -32,7 +33,8 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   db-reportes:
     image: mysql:8.0
@@ -48,7 +50,8 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   db-auth:
     image: mysql:8.0
@@ -64,7 +67,8 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   # ── MICROSERVICIOS ──────────────────────────────
 
@@ -143,6 +147,22 @@ services:
       - ms-kpi
       - ms-reportes
       - ms-auth
+    networks:
+      - spring-net
+
+  ms-bff:
+    build: ./msbff  
+    container_name: ms-bff
+    ports:
+      - "8085:8085"
+    environment:
+      MS_DATOS_URL: http://ms-datos:8081
+      MS_KPI_URL: http://ms-kpi:8082
+      MS_REPORTES_URL: http://ms-reportes:8083
+    depends_on:
+      - ms-datos
+      - ms-kpi
+      - ms-reportes
     networks:
       - spring-net
 

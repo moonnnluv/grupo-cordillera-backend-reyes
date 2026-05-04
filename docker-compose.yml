@@ -150,6 +150,22 @@ services:
     networks:
       - spring-net
 
+  ms-bff:
+    build: ./msbff  
+    container_name: ms-bff
+    ports:
+      - "8085:8085"
+    environment:
+      MS_DATOS_URL: http://ms-datos:8081
+      MS_KPI_URL: http://ms-kpi:8082
+      MS_REPORTES_URL: http://ms-reportes:8083
+    depends_on:
+      - ms-datos
+      - ms-kpi
+      - ms-reportes
+    networks:
+      - spring-net
+
 # ── VOLÚMENES Y RED ─────────────────────────────
 
 volumes:

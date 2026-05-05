@@ -142,11 +142,13 @@ services:
       MS_KPI_URL: http://ms-kpi:8082
       MS_REPORTES_URL: http://ms-reportes:8083
       MS_AUTH_URL: http://ms-auth:8084
+      MS_BFF_URL: http://ms-bff:8085
     depends_on:
       - ms-datos
       - ms-kpi
       - ms-reportes
       - ms-auth
+      - ms-bff
     networks:
       - spring-net
 

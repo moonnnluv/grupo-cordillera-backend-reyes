@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,10 +44,10 @@ public class AuthController {
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String token = jwtUtils.generateToken(userDetails);
-
         Usuario usuario = usuarioRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow();
+
+        String token = jwtUtils.generateToken(userDetails, usuario.getRol());
 
         AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
                 usuario.getUsername(),
@@ -68,11 +69,18 @@ public class AuthController {
                     .body(Map.of("message", "El email ya está en uso"));
         }
 
+        List<String> rolesValidos = List.of("ADMIN_GENERAL", "ADMIN_SUCURSAL", "VENDEDOR");
+        String rol = (request.getRol() != null) ? request.getRol().toUpperCase() : "VENDEDOR";
+        if (!rolesValidos.contains(rol)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Rol inválido. Use: ADMIN_GENERAL, ADMIN_SUCURSAL o VENDEDOR"));
+        }
+
         Usuario usuario = new Usuario();
         usuario.setUsername(request.getUsername());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setEmail(request.getEmail());
-        usuario.setRol(request.getRol() != null ? request.getRol() : "USER");
+        usuario.setRol(rol);
         usuario.setEnabled(true);
 
         usuarioRepository.save(usuario);

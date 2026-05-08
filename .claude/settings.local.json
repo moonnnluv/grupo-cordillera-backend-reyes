@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Set-Location \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\"; Get-ChildItem -Recurse -Force | ForEach-Object { $_.FullName } | Sort-Object)",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\"; Get-ChildItem -Recurse -Exclude \".git\" | Where-Object { $_.PSIsContainer } | ForEach-Object { $_.FullName } | Sort-Object)",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\"; Get-ChildItem -Recurse -Exclude \"node_modules\",\".git\" | ForEach-Object { if \\($_.PSIsContainer\\) { $_.FullName.Replace\\($PWD, ''\\) } else { $_.FullName.Replace\\($PWD, ''\\) } } | Sort-Object)",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\"; Get-ChildItem -Recurse -Exclude \"node_modules\",\".git\" -Force | Where-Object { -not $_.PSIsContainer } | Select-Object -ExpandProperty FullName | % { $_.Replace\\($PWD, ''\\).TrimStart\\('\\\\'\\) } | Sort-Object)",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\\\\src\"; Get-ChildItem -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object -ExpandProperty FullName | % { $_.Replace\\(\\(Get-Location\\).Path, 'src'\\).TrimStart\\('\\\\'\\) } | Sort-Object)",
+      "Bash(dir \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\" /b)",
+      "Bash(BASE=\"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\\\\src\\\\components\" *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\aleja\\OneDrive\\Escritorio\\grupo-cordillera-frontend-reyes\\frontend\\src\\components"
+    ]
+  }
+}

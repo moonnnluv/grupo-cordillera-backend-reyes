@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/bff")
-@CrossOrigin(origins = "http://localhost:5173")
 public class BffController {
 
     private final WebClient msDatosClient;
     private final WebClient msKpiClient;
     private final WebClient msReportesClient;
 
-    // Constructor explícito con @Qualifier para que Spring sepa cuál bean inyectar
     public BffController(
             @Qualifier("msDatosClient") WebClient msDatosClient,
             @Qualifier("msKpiClient") WebClient msKpiClient,

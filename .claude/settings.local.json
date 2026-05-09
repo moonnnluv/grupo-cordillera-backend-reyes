@@ -7,7 +7,9 @@
       "PowerShell(Set-Location \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\"; Get-ChildItem -Recurse -Exclude \"node_modules\",\".git\" -Force | Where-Object { -not $_.PSIsContainer } | Select-Object -ExpandProperty FullName | % { $_.Replace\\($PWD, ''\\).TrimStart\\('\\\\'\\) } | Sort-Object)",
       "PowerShell(Set-Location \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\\\\src\"; Get-ChildItem -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object -ExpandProperty FullName | % { $_.Replace\\(\\(Get-Location\\).Path, 'src'\\).TrimStart\\('\\\\'\\) } | Sort-Object)",
       "Bash(dir \"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\" /b)",
-      "Bash(BASE=\"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\\\\src\\\\components\" *)"
+      "Bash(BASE=\"c:\\\\Users\\\\aleja\\\\OneDrive\\\\Escritorio\\\\grupo-cordillera-frontend-reyes\\\\frontend\\\\src\\\\components\" *)",
+      "Bash(Get-ChildItem *)",
+      "PowerShell(head *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\aleja\\OneDrive\\Escritorio\\grupo-cordillera-frontend-reyes\\frontend\\src\\components"

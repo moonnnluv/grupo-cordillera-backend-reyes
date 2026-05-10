@@ -17,6 +17,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 @Component
 public class JwtUtils {
@@ -79,6 +80,8 @@ public class JwtUtils {
                     .build()
                     .parseClaimsJws(token);
             return true;
+        } catch (SignatureException e) {
+            logger.error("Firma JWT inválida: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             logger.error("Token JWT inválido: {}", e.getMessage());
         } catch (ExpiredJwtException e) {

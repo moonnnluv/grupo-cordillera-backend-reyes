@@ -1,4 +1,5 @@
 # ms-auth — Microservicio de Autenticación y Autorización
+**Grupo Cordillera** · DSY1106 Desarrollo Fullstack III · DuocUC 2026
 
 Gestiona el registro de usuarios, autenticación con JWT y control de acceso basado en roles (RBAC) para Grupo Cordillera. Emite tokens firmados con HS256 que los demás servicios validan mediante el API Gateway.
 
@@ -89,11 +90,8 @@ Levanta dos contenedores:
 - `ms-auth` — aplicación Spring Boot, espera a que la BD esté saludable
 
 ```bash
-# Detener
-docker compose down
-
-# Detener y eliminar volúmenes
-docker compose down -v
+docker compose down      # detener
+docker compose down -v   # detener y eliminar volúmenes
 ```
 
 ---
@@ -182,13 +180,13 @@ Base path: `/api/auth` (público — no requiere token)
 
 ## Patrones implementados
 
-| Patrón | Descripción |
-|---|---|
-| **DTO** | `LoginRequest`, `RegisterRequest`, `AuthResponse` separan los contratos de API de la entidad de dominio |
-| **Repository Pattern** | `UsuarioRepository` extiende `JpaRepository`; consultas `findByUsername`, `existsByUsername`, `existsByEmail` |
-| **Service Layer** | `CustomUserDetailsService` implementa `UserDetailsService`; mapea `Usuario` a `UserDetails` de Spring Security |
-| **Security Filter** | `JwtAuthenticationFilter` extiende `OncePerRequestFilter`; extrae y valida el token en cada request |
-| **JWT Utility** | `JwtUtils` centraliza generación, validación y extracción de claims |
-| **Global Exception Handler** | `@RestControllerAdvice` devuelve respuestas de error estandarizadas |
-| **Dependency Injection** | Inyección por constructor vía `@RequiredArgsConstructor` de Lombok |
-| **Multi-stage Docker Build** | Imagen de construcción (JDK) separada de la imagen de runtime (JRE) |
+| Patrón | Clase(s) | Justificación |
+|---|---|---|
+| **DTO** | `LoginRequest`, `RegisterRequest`, `AuthResponse` | Separa los contratos de la API de la entidad de dominio. El campo `password` nunca se expone en las respuestas; los campos de entrada y salida son independientes de la estructura de la base de datos, protegiendo la información sensible |
+| **Repository Pattern** | `UsuarioRepository` | Encapsula el acceso a datos de usuarios. Centraliza las consultas por username y validaciones de unicidad, sin exponer SQL al servicio |
+| **Service Layer** | `CustomUserDetailsService` | Implementa `UserDetailsService` de Spring Security, mapeando la entidad `Usuario` a `UserDetails`. Desacopla Spring Security de la estructura interna de la BD |
+| **Security Filter** | `JwtAuthenticationFilter` | Extiende `OncePerRequestFilter` para extraer y validar el token en cada request. Centraliza la autenticación en un único componente sin repetir lógica en cada endpoint |
+| **JWT Utility** | `JwtUtils` | Centraliza la generación, validación y extracción de claims JWT. Si se cambia el algoritmo o la librería JWT, solo se modifica esta clase |
+| **Global Exception Handler** | `@RestControllerAdvice` | Devuelve respuestas de error estandarizadas ante credenciales inválidas, usernames duplicados o roles no reconocidos |
+| **Dependency Injection** | Constructores + `@RequiredArgsConstructor` | Inyección por constructor garantiza inmutabilidad y facilita pruebas unitarias con mocks de Spring Security |
+| **Multi-stage Docker Build** | `Dockerfile` | Separa compilación (JDK) de runtime (JRE), reduciendo el tamaño de la imagen y la superficie de ataque |

@@ -1,4 +1,5 @@
 # ms-bff — Backend For Frontend
+**Grupo Cordillera** · DSY1106 Desarrollo Fullstack III · DuocUC 2026
 
 Capa de agregación que consolida en una sola respuesta los datos provenientes de ms-datos, ms-kpi y ms-reportes. Reduce la cantidad de llamadas que el frontend necesita realizar y aplica Circuit Breaker para tolerar fallos parciales en los servicios downstream.
 
@@ -61,7 +62,6 @@ docker compose up --build
 El contenedor `ms-bff` depende de `ms-datos`, `ms-kpi` y `ms-reportes` (arrancan en orden declarado).
 
 ```bash
-# Detener
 docker compose down
 ```
 
@@ -126,12 +126,12 @@ Base path: `/bff`
 
 ## Patrones implementados
 
-| Patrón | Descripción |
-|---|---|
-| **BFF (Backend For Frontend)** | Agrega respuestas de tres microservicios en una sola llamada optimizada para el frontend |
-| **Circuit Breaker** | `@CircuitBreaker` de Resilience4j con métodos de fallback que devuelven listas vacías y estado `SERVICIO_NO_DISPONIBLE` |
-| **Fallback Pattern** | Respuesta degradada que evita propagar errores al cliente cuando un servicio downstream falla |
-| **Reactive Client** | `WebClient` (WebFlux) para llamadas HTTP no bloqueantes a los servicios downstream |
-| **Service Aggregation** | `WebClientConfig` define tres beans `WebClient` independientes, uno por servicio downstream |
-| **Dependency Injection** | Inyección por constructor vía `@RequiredArgsConstructor` de Lombok |
-| **Multi-stage Docker Build** | Imagen de construcción (JDK) separada de la imagen de runtime (JRE) |
+| Patrón | Clase(s) | Justificación |
+|---|---|---|
+| **BFF (Backend For Frontend)** | `BffController` | El frontend del panel gerencial necesita datos de tres microservicios distintos. Sin BFF, el frontend haría 3 llamadas paralelas y debería consolidarlas. El BFF reduce esas 3 llamadas a 1, simplificando el cliente y centralizando la lógica de agregación |
+| **Circuit Breaker** | `@CircuitBreaker` + Resilience4j | Si ms-datos, ms-kpi o ms-reportes falla, el panel ejecutivo no debe quedar completamente inoperativo. El Circuit Breaker detecta fallos consecutivos y corta el circuito temporalmente, retornando datos degradados en lugar de propagar errores al cliente |
+| **Fallback Pattern** | `dashboardFallback()`, `sucursalFallback()` | Provee una respuesta degradada (listas vacías + estado `SERVICIO_NO_DISPONIBLE`) cuando el Circuit Breaker está abierto. Garantiza que el frontend siempre recibe una respuesta válida, aunque sea parcial |
+| **Reactive Client** | `WebClient` (WebFlux) | Realiza llamadas HTTP no bloqueantes a los servicios downstream, evitando que un servicio lento bloquee el hilo del servidor mientras espera respuesta |
+| **Service Aggregation** | `WebClientConfig` | Define tres beans `WebClient` independientes (uno por servicio downstream), centralizando la configuración de URLs y permitiendo cambiar endpoints sin modificar el código del controlador |
+| **Dependency Injection** | Constructores + `@RequiredArgsConstructor` | Inyección por constructor de los tres `WebClient` garantiza que el BFF sea testeable con mocks de cada servicio downstream |
+| **Multi-stage Docker Build** | `Dockerfile` | Separa compilación (JDK) de runtime (JRE), reduciendo el tamaño de la imagen final |

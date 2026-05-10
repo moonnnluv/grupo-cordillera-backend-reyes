@@ -1,6 +1,7 @@
 # ms-datos — Microservicio de Datos Organizacionales
+**Grupo Cordillera** · DSY1106 Desarrollo Fullstack III · DuocUC 2026
 
-Centraliza y almacena métricas e indicadores operacionales provenientes de distintas fuentes de negocio (ventas, inventario, finanzas, e-commerce) para las sucursales de Grupo Cordillera.
+Centraliza y almacena métricas e indicadores operacionales provenientes de distintas fuentes de negocio (ventas, inventario, finanzas, e-commerce) para las sucursales de Grupo Cordillera. Reemplaza el proceso manual de consolidación en hojas de cálculo por un repositorio centralizado y consultable vía API.
 
 ---
 
@@ -86,16 +87,9 @@ Levanta dos contenedores:
 - `db-datos` — MySQL 8.0 con volumen persistente `datos-data`
 - `ms-datos` — aplicación Spring Boot, espera a que la BD esté saludable
 
-Para detener y eliminar los contenedores:
-
 ```bash
-docker compose down
-```
-
-Para eliminar también los volúmenes:
-
-```bash
-docker compose down -v
+docker compose down      # detener
+docker compose down -v   # detener y eliminar volúmenes
 ```
 
 ---
@@ -128,10 +122,10 @@ Base path: `/api/datos`
 
 ## Patrones implementados
 
-| Patrón | Descripción |
-|---|---|
-| **Repository Pattern** | `DatoOrganizacionalRepository` extiende `JpaRepository`; encapsula el acceso a datos |
-| **Service Layer** | Interfaz `DatoOrganizacionalService` + implementación `DatoOrganizacionalServiceImpl`; desacopla lógica de negocio del controlador |
-| **Global Exception Handler** | `@RestControllerAdvice` en `GlobalExceptionHandler`; respuestas de error estandarizadas |
-| **Dependency Injection** | Inyección por constructor vía `@RequiredArgsConstructor` de Lombok |
-| **Multi-stage Docker Build** | Imagen de construcción (JDK) separada de la imagen de runtime (JRE) para reducir el tamaño final |
+| Patrón | Clase(s) | Justificación |
+|---|---|---|
+| **Repository Pattern** | `DatoOrganizacionalRepository` | Abstrae el acceso a datos detrás de una interfaz. Grupo Cordillera integra múltiples fuentes (ventas, inventario, finanzas, e-commerce); el patrón permite estandarizar el acceso sin que la lógica de negocio dependa del motor de persistencia. Si se migra de MySQL a otro motor, solo se modifica el repositorio |
+| **Service Layer** | `DatoOrganizacionalService` / `DatoOrganizacionalServiceImpl` | Desacopla la lógica de negocio del controlador REST. Permite modificar reglas de validación o transformación de datos sin alterar el contrato de la API |
+| **Global Exception Handler** | `GlobalExceptionHandler` | Centraliza el manejo de errores con `@RestControllerAdvice`, garantizando respuestas de error consistentes con timestamp en todos los endpoints sin duplicar lógica |
+| **Dependency Injection** | Constructores + `@RequiredArgsConstructor` | Inyección por constructor garantiza inmutabilidad de dependencias y facilita pruebas unitarias |
+| **Multi-stage Docker Build** | `Dockerfile` | Separa compilación (JDK) de runtime (JRE), reduciendo el tamaño de la imagen final y minimizando la superficie de ataque en producción |

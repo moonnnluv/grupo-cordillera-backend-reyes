@@ -1,6 +1,7 @@
 # ms-reportes — Microservicio de Reportes
+**Grupo Cordillera** · DSY1106 Desarrollo Fullstack III · DuocUC 2026
 
-Gestiona el almacenamiento y la recuperación de reportes de negocio para las distintas áreas y sucursales de Grupo Cordillera. Provee filtrado por tipo de reporte y por sucursal.
+Gestiona el almacenamiento y la recuperación de reportes de negocio para las distintas áreas y sucursales de Grupo Cordillera. Proporciona el panel de control que la alta dirección requiere para tomar decisiones oportunas, reemplazando la generación manual de informes en hojas de cálculo.
 
 ---
 
@@ -38,9 +39,10 @@ Gestiona el almacenamiento y la recuperación de reportes de negocio para las di
 | Campo | Tipo | Descripción |
 |---|---|---|
 | `id` | Long | PK auto-generada |
+| `titulo` | String | Título descriptivo del reporte |
 | `tipo` | String | Tipo de reporte: `VENTAS`, `INVENTARIO`, `FINANCIERO`, etc. |
-| `sucursal` | String | Identificador de sucursal |
-| `contenido` | String / Text | Contenido o resumen del reporte |
+| `sucursal` | String | Identificador de sucursal (nullable para reportes globales) |
+| `contenido` | String | Contenido o resumen del reporte |
 | `fecha` | LocalDate | Fecha del reporte |
 
 ---
@@ -87,16 +89,9 @@ Levanta dos contenedores:
 - `db-reportes` — MySQL 8.0 con volumen persistente `reportes-data`
 - `ms-reportes` — aplicación Spring Boot, espera a que la BD esté saludable
 
-Para detener y eliminar los contenedores:
-
 ```bash
-docker compose down
-```
-
-Para eliminar también los volúmenes:
-
-```bash
-docker compose down -v
+docker compose down      # detener
+docker compose down -v   # detener y eliminar volúmenes
 ```
 
 ---
@@ -118,6 +113,7 @@ Base path: `/api/reportes`
 
 ```json
 {
+  "titulo": "Reporte Mensual de Ventas",
   "tipo": "VENTAS",
   "sucursal": "Concepción",
   "contenido": "Resumen mensual de ventas: ingresos totales $12.500.000",
@@ -129,10 +125,10 @@ Base path: `/api/reportes`
 
 ## Patrones implementados
 
-| Patrón | Descripción |
-|---|---|
-| **Repository Pattern** | `ReporteRepository` extiende `JpaRepository` con consultas personalizadas por tipo, sucursal y combinación de ambos |
-| **Service Layer** | Interfaz `ReporteService` + implementación `ReporteServiceImpl`; desacopla la lógica de negocio del controlador |
-| **Global Exception Handler** | `@RestControllerAdvice` en `GlobalExceptionHandler`; respuestas de error estandarizadas |
-| **Dependency Injection** | Inyección por constructor vía `@RequiredArgsConstructor` de Lombok |
-| **Multi-stage Docker Build** | Imagen de construcción (JDK) separada de la imagen de runtime (JRE) para reducir el tamaño final |
+| Patrón | Clase(s) | Justificación |
+|---|---|---|
+| **Repository Pattern** | `ReporteRepository` | Abstrae el acceso a datos. La alta dirección requiere distintas vistas de los reportes (por tipo, por sucursal, combinadas); el repositorio encapsula estas consultas sin exponer SQL al resto de la aplicación |
+| **Service Layer** | `ReporteService` / `ReporteServiceImpl` | Desacopla la lógica de negocio del controlador REST. Permite agregar validaciones o transformaciones de reportes sin alterar el contrato de la API |
+| **Global Exception Handler** | `GlobalExceptionHandler` | Centraliza el manejo de errores con `@RestControllerAdvice`, garantizando respuestas de error consistentes con timestamp en todos los endpoints |
+| **Dependency Injection** | Constructores + `@RequiredArgsConstructor` | Inyección por constructor garantiza inmutabilidad de dependencias y facilita pruebas unitarias |
+| **Multi-stage Docker Build** | `Dockerfile` | Separa compilación (JDK) de runtime (JRE), reduciendo el tamaño de la imagen final y minimizando la superficie de ataque |

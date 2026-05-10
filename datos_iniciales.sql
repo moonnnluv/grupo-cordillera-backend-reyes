@@ -7,12 +7,12 @@
 USE baseauth;
 
 -- Usuarios de prueba (password: Admin123!)
--- Hash BCrypt de "Admin123!" generado con strength 10
+-- Hash BCrypt de "Admin123!" generado con strength 10 (prefijo $2a$ compatible con Spring Security BCryptPasswordEncoder)
 INSERT INTO usuarios (username, password, email, rol, enabled) VALUES
-('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'admin@cordillera.cl', 'ADMIN_GENERAL', true),
-('jefa.santiago', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'jefa@santiago.cordillera.cl', 'ADMIN_SUCURSAL', true),
-('vendedor1', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'vendedor1@cordillera.cl', 'VENDEDOR', true),
-('vendedor2', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'vendedor2@cordillera.cl', 'VENDEDOR', true);
+('admin', '$2a$10$Zd.dmXuK1uf71qlUgBEDMeQ2b94ovEo2Rz0eN0NaHZvBGfn9EgAuq', 'admin@cordillera.cl', 'ADMIN_GENERAL', true),
+('jefa.santiago', '$2a$10$Zd.dmXuK1uf71qlUgBEDMeQ2b94ovEo2Rz0eN0NaHZvBGfn9EgAuq', 'jefa@santiago.cordillera.cl', 'ADMIN_SUCURSAL', true),
+('vendedor1', '$2a$10$Zd.dmXuK1uf71qlUgBEDMeQ2b94ovEo2Rz0eN0NaHZvBGfn9EgAuq', 'vendedor1@cordillera.cl', 'VENDEDOR', true),
+('vendedor2', '$2a$10$Zd.dmXuK1uf71qlUgBEDMeQ2b94ovEo2Rz0eN0NaHZvBGfn9EgAuq', 'vendedor2@cordillera.cl', 'VENDEDOR', true);
 
 -- ── baseorganizacional ────────────────────────
 USE baseorganizacional;
@@ -40,8 +40,8 @@ INSERT INTO kpi (tipo, nombre, valor, unidad, fecha, sucursal) VALUES
 ('VENTAS',       'margen_ventas_abril_stgo',    43750000, '%',          '2026-04-30', 'SANTIAGO'),
 ('VENTAS',       'margen_ventas_abril_valpo',   30625000, '%',          '2026-04-30', 'VALPARAISO'),
 ('VENTAS',       'margen_ventas_abril_conce',   22050000, '%',          '2026-04-30', 'CONCEPCION'),
-('INVENTARIO',   'rotacion_diaria_electronica',    141.67, 'unidades/día', '2026-04-30', 'SANTIAGO'),
-('INVENTARIO',   'rotacion_diaria_hogar',           290,  'unidades/día', '2026-04-30', 'SANTIAGO'),
+('INVENTARIO',   'rotacion_diaria_electronica',    141.67, 'unidades/dia', '2026-04-30', 'SANTIAGO'),
+('INVENTARIO',   'rotacion_diaria_hogar',           290,  'unidades/dia', '2026-04-30', 'SANTIAGO'),
 ('RENTABILIDAD', 'rentabilidad_abril_stgo',    100050000, 'CLP',        '2026-04-30', 'SANTIAGO'),
 ('RENTABILIDAD', 'rentabilidad_abril_valpo',    70587500, 'CLP',        '2026-04-30', 'VALPARAISO'),
 ('VENTAS',       'margen_ventas_marzo_stgo',    41300000, '%',          '2026-03-31', 'SANTIAGO');

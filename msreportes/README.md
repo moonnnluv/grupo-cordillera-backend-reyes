@@ -121,7 +121,7 @@ Base path: `/api/reportes`
   "tipo": "VENTAS",
   "sucursal": "Concepción",
   "contenido": "Resumen mensual de ventas: ingresos totales $12.500.000",
-  "fecha": "2025-05-01"
+  "fecha": "2026-05-01"
 }
 ```
 

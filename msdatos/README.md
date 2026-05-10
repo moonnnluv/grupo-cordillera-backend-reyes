@@ -119,7 +119,7 @@ Base path: `/api/datos`
   "fuente": "VENTAS",
   "indicador": "ingresos_mes",
   "valor": 15000000.0,
-  "fecha": "2025-05-01",
+  "fecha": "2026-05-01",
   "sucursal": "Santiago Centro"
 }
 ```

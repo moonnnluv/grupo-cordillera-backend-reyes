@@ -41,6 +41,44 @@ Esto levanta todos los contenedores en orden correcto gracias a los healthchecks
 
 ---
 
+## Inicio desde cero (reset completo)
+
+Sigue estos pasos en orden para hacer un reset limpio y dejar el sistema funcionando desde cero.
+
+**Paso 1 — Bajar todo y eliminar volúmenes e imágenes**
+
+```bash
+docker compose down -v --rmi all
+```
+
+**Paso 2 — Volver a levantar desde cero**
+
+```bash
+docker compose up --build
+```
+
+**Paso 3 — Esperar que todos los contenedores estén `healthy`, luego correr el seed**
+
+```powershell
+Get-Content datos_iniciales.sql | docker exec -i db-auth mysql -uroot -proot --force baseauth
+Get-Content datos_iniciales.sql | docker exec -i db-datos mysql -uroot -proot --force baseorganizacional
+Get-Content datos_iniciales.sql | docker exec -i db-kpi mysql -uroot -proot --force basekpi
+Get-Content datos_iniciales.sql | docker exec -i db-reportes mysql -uroot -proot --force basereportes
+```
+
+> Los errores `ERROR 1049` y `ERROR 1146` que aparecen son normales e ignorables — ver sección **Datos iniciales (seed)** más abajo.
+
+**Paso 4 — Levantar el frontend**
+
+```bash
+cd grupo-cordillera-frontend-reyes/frontend
+npm run dev
+```
+
+El frontend quedará disponible en `http://localhost:5173`.
+
+---
+
 ## Datos iniciales (seed)
 
 Después de levantar el sistema con `docker compose up`, ejecuta el archivo `datos_iniciales.sql` en cada contenedor MySQL para poblar las bases de datos.
@@ -67,16 +105,16 @@ docker exec -i db-reportes mysql -uroot -proot --force < datos_iniciales.sql
 
 ```powershell
 # baseauth — usuarios de prueba
-Get-Content datos_iniciales.sql | docker exec -i db-auth mysql -uroot -proot --force
+Get-Content datos_iniciales.sql | docker exec -i db-auth mysql -uroot -proot --force baseauth
 
 # baseorganizacional — datos organizacionales
-Get-Content datos_iniciales.sql | docker exec -i db-datos mysql -uroot -proot --force
+Get-Content datos_iniciales.sql | docker exec -i db-datos mysql -uroot -proot --force baseorganizacional
 
 # basekpi — KPIs
-Get-Content datos_iniciales.sql | docker exec -i db-kpi mysql -uroot -proot --force
+Get-Content datos_iniciales.sql | docker exec -i db-kpi mysql -uroot -proot --force basekpi
 
 # basereportes — reportes
-Get-Content datos_iniciales.sql | docker exec -i db-reportes mysql -uroot -proot --force
+Get-Content datos_iniciales.sql | docker exec -i db-reportes mysql -uroot -proot --force basereportes
 ```
 
 > **Nota:** durante la ejecución pueden aparecer errores `ERROR 1049 (42000): Unknown database` y `ERROR 1146 (42S02): Table doesn't exist`. Esto es **normal e ignorable** — el archivo SQL contiene sentencias `USE` para todas las bases, pero cada contenedor solo reconoce la suya propia. El flag `--force` hace que MySQL continúe de todos modos, y cada base de datos inserta únicamente sus propios datos correctamente.

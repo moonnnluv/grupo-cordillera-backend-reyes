@@ -1,10 +1,10 @@
 Repositorios GitHub - Grupo Cordillera
 DSY1106 Desarrollo Fullstack III - DuocUC 2026
-Desarrolladora: Alejandra Reyes
+Desarrolladora: Alejandra Reyes Duque
 
 === BACKEND (microservicios + API Gateway) ===
 URL: https://github.com/moonnnluv/grupo-cordillera-backend-reyes
-Rama principal: develop
+Rama principal: main
 Contiene:
   - apigateway   (Puerto 9090) — Spring Cloud Gateway MVC + Bucket4j Rate Limiting
   - msauth       (Puerto 8084) — Autenticacion JWT + RBAC con Spring Security

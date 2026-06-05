@@ -2,7 +2,6 @@ package com.grupcordillera.msdatos.controller;
 
 import com.grupcordillera.msdatos.entity.DatoOrganizacional;
 import com.grupcordillera.msdatos.service.DatoOrganizacionalService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +10,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/datos")
-@RequiredArgsConstructor
 public class DatoOrganizacionalController {
 
     private final DatoOrganizacionalService service;
+
+    public DatoOrganizacionalController(DatoOrganizacionalService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<List<DatoOrganizacional>> listarTodos() {

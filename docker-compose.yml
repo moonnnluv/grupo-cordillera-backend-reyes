@@ -153,7 +153,7 @@ services:
       - spring-net
 
   ms-bff:
-    build: ./msbff  
+    build: ./msbff
     container_name: ms-bff
     ports:
       - "8085:8085"
@@ -168,6 +168,37 @@ services:
     networks:
       - spring-net
 
+  # ── SONARQUBE ───────────────────────────────────
+
+  db-sonarqube:
+    image: postgres:16-alpine
+    container_name: db-sonarqube
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar1234
+      POSTGRES_DB: sonar
+    volumes:
+      - sonar-db-data:/var/lib/postgresql/data
+    networks:
+      - spring-net
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    depends_on:
+      - db-sonarqube
+    environment:
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar1234
+      SONAR_JDBC_URL: jdbc:postgresql://db-sonarqube:5432/sonar
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonar-data:/opt/sonarqube/data
+      - sonar-logs:/opt/sonarqube/logs
+    networks:
+      - spring-net
+
 # ── VOLÚMENES Y RED ─────────────────────────────
 
 volumes:
@@ -175,6 +206,9 @@ volumes:
   kpi-data:
   reportes-data:
   auth-data:
+  sonar-db-data:
+  sonar-data:
+  sonar-logs:
 
 networks:
   spring-net:

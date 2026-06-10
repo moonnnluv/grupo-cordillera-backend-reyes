@@ -6,6 +6,8 @@ import com.grupcordillera.msauth.dto.RegisterRequest;
 import com.grupcordillera.msauth.entity.Usuario;
 import com.grupcordillera.msauth.repository.UsuarioRepository;
 import com.grupcordillera.msauth.security.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticación", description = "Operaciones de autenticación y registro de usuarios de Grupo Cordillera")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -38,6 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Autenticar usuario y obtener token JWT")
     ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -59,6 +63,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Registrar un nuevo usuario en el sistema")
     ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         if (usuarioRepository.existsByUsername(request.getUsername())) {
             return ResponseEntity.badRequest()

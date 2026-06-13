@@ -8,4 +8,5 @@ public class RegisterRequest {
     private String password;
     private String email;
     private String rol;
+    private String sucursal;
 }

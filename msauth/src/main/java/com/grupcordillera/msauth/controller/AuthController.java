@@ -51,12 +51,13 @@ public class AuthController {
         Usuario usuario = usuarioRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow();
 
-        String token = jwtUtils.generateToken(userDetails, usuario.getRol());
+        String token = jwtUtils.generateToken(userDetails, usuario.getRol(), usuario.getSucursal());
 
         AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
                 usuario.getUsername(),
                 usuario.getEmail(),
-                usuario.getRol()
+                usuario.getRol(),
+                usuario.getSucursal()
         );
 
         return ResponseEntity.ok(new AuthResponse(token, userInfo));
@@ -86,6 +87,7 @@ public class AuthController {
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setEmail(request.getEmail());
         usuario.setRol(rol);
+        usuario.setSucursal(request.getSucursal());
         usuario.setEnabled(true);
 
         usuarioRepository.save(usuario);

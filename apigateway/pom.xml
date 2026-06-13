@@ -48,6 +48,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Security (necesario para SecurityConfig / CORS preflight) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- JWT para validar tokens en el gateway -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

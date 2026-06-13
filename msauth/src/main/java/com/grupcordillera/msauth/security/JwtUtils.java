@@ -41,6 +41,11 @@ public class JwtUtils {
 
     // Genera token CON rol incluido como claim
     public String generateToken(UserDetails userDetails, String rol) {
+        return generateToken(userDetails, rol, null);
+    }
+
+    // Genera token CON rol y sucursal como claims
+    public String generateToken(UserDetails userDetails, String rol, String sucursal) {
         JwtBuilder builder = Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
@@ -49,6 +54,9 @@ public class JwtUtils {
 
         if (rol != null) {
             builder.claim("rol", rol);
+        }
+        if (sucursal != null) {
+            builder.claim("sucursal", sucursal);
         }
 
         return builder.compact();
@@ -70,6 +78,15 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("rol");
+    }
+
+    public String getSucursalFromToken(String token) {
+        return (String) Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("sucursal");
     }
 
     public boolean validateToken(String token) {

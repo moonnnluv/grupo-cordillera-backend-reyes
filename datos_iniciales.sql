@@ -8,11 +8,11 @@ USE baseauth;
 
 -- Usuarios de prueba (password: Admin123!)
 -- Hash BCrypt de "Admin123!" generado con strength 10
-INSERT INTO usuarios (username, password, email, rol, enabled) VALUES
-('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'admin@cordillera.cl', 'ADMIN_GENERAL', true),
-('jefa.santiago', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'jefa@santiago.cordillera.cl', 'ADMIN_SUCURSAL', true),
-('vendedor1', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'vendedor1@cordillera.cl', 'VENDEDOR', true),
-('vendedor2', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'vendedor2@cordillera.cl', 'VENDEDOR', true);
+INSERT INTO usuarios (username, password, email, rol, enabled, sucursal) VALUES
+('admin',         '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'admin@cordillera.cl',              'ADMIN_GENERAL',  true, NULL),
+('jefa.santiago', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'jefa@santiago.cordillera.cl',      'ADMIN_SUCURSAL', true, 'SANTIAGO'),
+('vendedor1',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'vendedor1@cordillera.cl',          'VENDEDOR',       true, NULL),
+('vendedor2',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh9.', 'vendedor2@cordillera.cl',          'VENDEDOR',       true, NULL);
 
 -- ── baseorganizacional ────────────────────────
 USE baseorganizacional;

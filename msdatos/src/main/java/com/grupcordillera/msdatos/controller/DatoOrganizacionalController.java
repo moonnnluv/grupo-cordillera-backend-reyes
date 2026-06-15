@@ -4,6 +4,7 @@ import com.grupcordillera.msdatos.entity.DatoOrganizacional;
 import com.grupcordillera.msdatos.service.DatoOrganizacionalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class DatoOrganizacionalController {
 
     @PostMapping
     @Operation(summary = "Guardar un nuevo dato organizacional")
-    public ResponseEntity<DatoOrganizacional> guardar(@RequestBody DatoOrganizacional dato) {
+    public ResponseEntity<DatoOrganizacional> guardar(@RequestBody @Valid DatoOrganizacional dato) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(dato));
     }
 

@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Autenticar usuario y obtener token JWT")
-    ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
@@ -65,7 +66,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Registrar un nuevo usuario en el sistema")
-    ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         if (usuarioRepository.existsByUsername(request.getUsername())) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "El username ya está en uso"));

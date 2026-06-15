@@ -2,6 +2,7 @@ package com.grupcordillera.msreportes.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,7 +55,7 @@ public class ReporteController {
 
     @PostMapping
     @Operation(summary = "Guardar un nuevo reporte")
-    public ResponseEntity<Reporte> guardar(@RequestBody Reporte reporte) {
+    public ResponseEntity<Reporte> guardar(@RequestBody @Valid Reporte reporte) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(reporte));
     }
 

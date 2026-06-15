@@ -2,6 +2,7 @@ package com.grupcordillera.mskpi.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,7 +56,7 @@ public class KpiController {
 
     @PostMapping
     @Operation(summary = "Guardar un nuevo KPI")
-    public ResponseEntity<Kpi> guardar(@RequestBody Kpi kpi) {
+    public ResponseEntity<Kpi> guardar(@RequestBody @Valid Kpi kpi) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(kpi));
     }
 

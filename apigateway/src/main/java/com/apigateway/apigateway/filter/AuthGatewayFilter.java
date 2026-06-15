@@ -46,7 +46,7 @@ public class AuthGatewayFilter extends OncePerRequestFilter {
         response.setHeader("X-Correlation-Id", correlationId);
 
         // Rutas públicas — no requieren JWT
-        if (path.startsWith("/api/auth/")) {
+        if (path.startsWith("/api/auth/") || path.startsWith("/health/") || path.startsWith("/actuator/")) {
             filterChain.doFilter(request, response);
             return;
         }

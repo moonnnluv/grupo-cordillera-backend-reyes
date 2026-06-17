@@ -255,6 +255,18 @@ Grupo Cordillera requiere consolidar información de múltiples sistemas con dis
 
 ---
 
+## Notas de troubleshooting
+
+**Encoding de Get-Content en PowerShell:** Al cargar datos semilla via `Get-Content archivo.sql | docker exec -i ...`, los caracteres especiales (tildes, ñ) pueden corromperse incluso usando `-Encoding UTF8` y `--default-character-set=utf8mb4`. Si encuentras texto como `d?a` en vez de `día`, es un problema cosmético conocido — no afecta funcionalidad. Corregir manualmente con `UPDATE` si es necesario para una demo.
+
+**CORS duplicado en api-gateway:** Si el login devuelve 403 sin razón aparente, verificar que CORS esté configurado en un solo lugar (CorsConfig.java vía CorsConfigurationSource consumido por SecurityConfig). Tener un FilterRegistrationBean<CorsFilter> adicional con HIGHEST_PRECEDENCE compitiendo con la configuración de Spring Security puede causar rechazos silenciosos sin loguear el motivo.
+
+**Orden de arranque de contenedores:** Si el frontend recibe 500 al hacer login justo después de un `docker compose up`, es probable que ms-auth aún no haya terminado de levantar (puede tardar 60-100 segundos en el primer arranque). Esperar y reintentar antes de asumir un bug.
+
+**JWT expirado en localStorage:** Si el login falla persistentemente con errores poco claros, verificar la consola del navegador. Un JWT expirado guardado de una sesión anterior puede seguir siendo enviado por el cliente. Limpiar con `localStorage.clear()` en la consola del navegador y refrescar.
+
+---
+
 ## Referencias
 
 - Fowler, M. (2002). *Patterns of enterprise application architecture*. Addison-Wesley.

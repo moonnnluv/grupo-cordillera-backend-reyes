@@ -30,4 +30,7 @@ public class Usuario {
 
     @Column(nullable = false)
     private Boolean enabled = true;
+
+    @Column(nullable = true, length = 50)
+    private String sucursal;
 }

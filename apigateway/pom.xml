@@ -48,6 +48,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Security (necesario para SecurityConfig / CORS preflight) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- JWT para validar tokens en el gateway -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -100,6 +106,11 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>5.0.0.4389</version>
             </plugin>
         </plugins>
     </build>

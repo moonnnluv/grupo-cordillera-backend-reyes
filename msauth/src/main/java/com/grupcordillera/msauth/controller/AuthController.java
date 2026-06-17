@@ -6,6 +6,8 @@ import com.grupcordillera.msauth.dto.RegisterRequest;
 import com.grupcordillera.msauth.entity.Usuario;
 import com.grupcordillera.msauth.repository.UsuarioRepository;
 import com.grupcordillera.msauth.security.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticación", description = "Operaciones de autenticación y registro de usuarios de Grupo Cordillera")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -38,7 +42,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    @Operation(summary = "Autenticar usuario y obtener token JWT")
+    ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
@@ -47,19 +52,21 @@ public class AuthController {
         Usuario usuario = usuarioRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow();
 
-        String token = jwtUtils.generateToken(userDetails, usuario.getRol());
+        String token = jwtUtils.generateToken(userDetails, usuario.getRol(), usuario.getSucursal());
 
         AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
                 usuario.getUsername(),
                 usuario.getEmail(),
-                usuario.getRol()
+                usuario.getRol(),
+                usuario.getSucursal()
         );
 
         return ResponseEntity.ok(new AuthResponse(token, userInfo));
     }
 
     @PostMapping("/register")
-    ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    @Operation(summary = "Registrar un nuevo usuario en el sistema")
+    ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         if (usuarioRepository.existsByUsername(request.getUsername())) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "El username ya está en uso"));
@@ -81,6 +88,7 @@ public class AuthController {
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setEmail(request.getEmail());
         usuario.setRol(rol);
+        usuario.setSucursal(request.getSucursal());
         usuario.setEnabled(true);
 
         usuarioRepository.save(usuario);

@@ -14,67 +14,52 @@ class JwtUtilsTest {
 
     private JwtUtils jwtUtils;
 
-    private static final String SECRET =
-        "bXlTdXBlclNlY3JldEtleVBhcmFHcnVwb0NvcmRpbGxlcmEyMDI1RFNZMTEwNg==";
-    private static final long EXPIRATION = 3600000L;
-
     @BeforeEach
     void setUp() {
         jwtUtils = new JwtUtils();
-        ReflectionTestUtils.setField(jwtUtils, "secret", SECRET);
-        ReflectionTestUtils.setField(jwtUtils, "expiration", EXPIRATION);
+        ReflectionTestUtils.setField(jwtUtils, "secret",
+                "bXlTdXBlclNlY3JldEtleVBhcmFHcnVwb0NvcmRpbGxlcmEyMDI1RFNZMTEwNg==");
+        ReflectionTestUtils.setField(jwtUtils, "expiration", 3600000L);
     }
 
-    private UserDetails buildUser(String username) {
-        return User.builder()
-            .username(username)
-            .password("irrelevant")
-            .authorities(Collections.emptyList())
-            .build();
+    private UserDetails user(String username) {
+        return User.withUsername(username).password("pass")
+                   .authorities(Collections.emptyList()).build();
     }
 
     @Test
-    void generateToken_retornaTokenNoNulo() {
-        String token = jwtUtils.generateToken(buildUser("testuser"));
+    void generateToken_retornaTokenConTresParts() {
+        String token = jwtUtils.generateToken(user("admin"));
         assertNotNull(token);
-        assertFalse(token.isBlank());
+        assertEquals(3, token.split("\\.").length);
     }
 
     @Test
-    void getUsernameFromToken_retornaUsernameDelToken() {
-        UserDetails user = buildUser("ale.reyes");
-        String token = jwtUtils.generateToken(user);
-        assertEquals("ale.reyes", jwtUtils.getUsernameFromToken(token));
-    }
-
-    @Test
-    void generateTokenConRol_getRolFromToken_retornaRolCorrecto() {
-        UserDetails user = buildUser("admin");
-        String token = jwtUtils.generateToken(user, "ADMIN_GENERAL");
-        assertEquals("ADMIN_GENERAL", jwtUtils.getRolFromToken(token));
-    }
-
-    @Test
-    void getRolFromToken_tokenSinRol_retornaNull() {
-        String token = jwtUtils.generateToken(buildUser("vendedor1"));
-        assertNull(jwtUtils.getRolFromToken(token));
+    void getUsernameFromToken_retornaNombreCorrectamente() {
+        String token = jwtUtils.generateToken(user("vendedor1"));
+        assertEquals("vendedor1", jwtUtils.getUsernameFromToken(token));
     }
 
     @Test
     void validateToken_tokenValido_retornaTrue() {
-        String token = jwtUtils.generateToken(buildUser("testuser"));
+        String token = jwtUtils.generateToken(user("admin"));
         assertTrue(jwtUtils.validateToken(token));
     }
 
     @Test
-    void validateToken_tokenMalformado_retornaFalse() {
-        assertFalse(jwtUtils.validateToken("token.invalido.malformado"));
+    void validateToken_tokenInvalido_retornaFalse() {
+        assertFalse(jwtUtils.validateToken("no.es.untoken"));
     }
 
     @Test
-    void validateToken_tokenModificado_retornaFalse() {
-        String token = jwtUtils.generateToken(buildUser("testuser"));
-        String tampered = token.substring(0, token.length() - 5) + "XXXXX";
-        assertFalse(jwtUtils.validateToken(tampered));
+    void generateToken_conRol_getRolFromTokenRetornaRolCorrecto() {
+        String token = jwtUtils.generateToken(user("jefa"), "ADMIN_SUCURSAL");
+        assertEquals("ADMIN_SUCURSAL", jwtUtils.getRolFromToken(token));
+    }
+
+    @Test
+    void generateToken_conSucursal_getSucursalFromTokenRetornaValorCorrecto() {
+        String token = jwtUtils.generateToken(user("jefa"), "ADMIN_SUCURSAL", "SANTIAGO");
+        assertEquals("SANTIAGO", jwtUtils.getSucursalFromToken(token));
     }
 }

@@ -1,0 +1,15 @@
+INSERT INTO dato_organizacional (fuente, indicador, valor, fecha, sucursal) VALUES
+('VENTAS',     'ingresos_mes_abril',     125000000, '2025-04-30', 'SANTIAGO'),
+('VENTAS',     'ingresos_mes_abril',      87500000, '2025-04-30', 'VALPARAISO'),
+('VENTAS',     'ingresos_mes_abril',      63000000, '2025-04-30', 'CONCEPCION'),
+('ECOMMERCE',  'ventas_online_abril',     42000000, '2025-04-30', 'SANTIAGO'),
+('ECOMMERCE',  'ventas_online_abril',     18500000, '2025-04-30', 'VALPARAISO'),
+('INVENTARIO', 'stock_electronica',           4250, '2025-04-30', 'SANTIAGO'),
+('INVENTARIO', 'stock_electronica',           2100, '2025-04-30', 'VALPARAISO'),
+('INVENTARIO', 'stock_hogar',                 8700, '2025-04-30', 'SANTIAGO'),
+('INVENTARIO', 'stock_hogar',                 5300, '2025-04-30', 'CONCEPCION'),
+('FINANZAS',   'costo_operacional_abril', 38000000, '2025-04-30', 'SANTIAGO'),
+('FINANZAS',   'costo_operacional_abril', 24000000, '2025-04-30', 'VALPARAISO'),
+('FINANZAS',   'utilidad_bruta_abril',    87000000, '2025-04-30', 'SANTIAGO'),
+('VENTAS',     'ingresos_mes_marzo',     118000000, '2025-03-31', 'SANTIAGO'),
+('VENTAS',     'ingresos_mes_marzo',      81000000, '2025-03-31', 'VALPARAISO');

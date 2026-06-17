@@ -68,19 +68,16 @@ public class AuthController {
     @Operation(summary = "Registrar un nuevo usuario en el sistema")
     ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         if (usuarioRepository.existsByUsername(request.getUsername())) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("message", "El username ya está en uso"));
+            throw new IllegalArgumentException("El username ya está en uso");
         }
         if (usuarioRepository.existsByEmail(request.getEmail())) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("message", "El email ya está en uso"));
+            throw new IllegalArgumentException("El email ya está en uso");
         }
 
         List<String> rolesValidos = List.of("ADMIN_GENERAL", "ADMIN_SUCURSAL", "VENDEDOR");
         String rol = (request.getRol() != null) ? request.getRol().toUpperCase() : "VENDEDOR";
         if (!rolesValidos.contains(rol)) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("message", "Rol inválido. Use: ADMIN_GENERAL, ADMIN_SUCURSAL o VENDEDOR"));
+            throw new IllegalArgumentException("Rol inválido. Use: ADMIN_GENERAL, ADMIN_SUCURSAL o VENDEDOR");
         }
 
         Usuario usuario = new Usuario();

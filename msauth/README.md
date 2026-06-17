@@ -44,6 +44,7 @@ Gestiona el registro de usuarios, autenticación con JWT y control de acceso bas
 | `email` | VARCHAR(100) | UNIQUE, NOT NULL | Correo electrónico |
 | `rol` | VARCHAR(30) | NOT NULL | `ADMIN_GENERAL`, `ADMIN_SUCURSAL` o `VENDEDOR` |
 | `enabled` | BOOLEAN | NOT NULL, DEFAULT TRUE | Cuenta activa |
+| `sucursal` | VARCHAR(50) | NULLABLE | Sucursal asociada al usuario (vacío para `ADMIN_GENERAL`) |
 
 ---
 
@@ -122,7 +123,8 @@ Base path: `/api/auth` (público — no requiere token)
   "user": {
     "username": "string",
     "email": "string",
-    "role": "ADMIN_GENERAL"
+    "role": "ADMIN_GENERAL",
+    "sucursal": "string"
   }
 }
 ```
@@ -135,19 +137,34 @@ Base path: `/api/auth` (público — no requiere token)
   "username": "string",
   "password": "string",
   "email": "string",
-  "rol": "ADMIN_GENERAL | ADMIN_SUCURSAL | VENDEDOR"
+  "rol": "ADMIN_GENERAL | ADMIN_SUCURSAL | VENDEDOR",
+  "sucursal": "string"
 }
 ```
 > El campo `rol` es opcional; si se omite, se asigna `VENDEDOR` por defecto.
+> El campo `sucursal` es opcional (nullable); identifica la sucursal del usuario.
 
 **Response `201 Created`:**
 ```json
 { "message": "Usuario registrado exitosamente" }
 ```
 
-**Response `400 Bad Request`** (username/email duplicado o rol inválido):
+**Response `400 Bad Request`** (username/email duplicado o rol inválido), generada por `GlobalExceptionHandler`:
 ```json
-{ "message": "El username ya está en uso" }
+{
+  "error": "Solicitud inválida",
+  "mensaje": "El username ya está en uso",
+  "timestamp": "2026-06-17T10:00:00"
+}
+```
+
+**Response `401 Unauthorized`** (credenciales inválidas en `/api/auth/login`), generada por `GlobalExceptionHandler`:
+```json
+{
+  "error": "Credenciales inválidas",
+  "mensaje": "Usuario o contraseña incorrectos",
+  "timestamp": "2026-06-17T10:00:00"
+}
 ```
 
 ---
@@ -187,6 +204,6 @@ Base path: `/api/auth` (público — no requiere token)
 | **Service Layer** | `CustomUserDetailsService` | Implementa `UserDetailsService` de Spring Security, mapeando la entidad `Usuario` a `UserDetails`. Desacopla Spring Security de la estructura interna de la BD |
 | **Security Filter** | `JwtAuthenticationFilter` | Extiende `OncePerRequestFilter` para extraer y validar el token en cada request. Centraliza la autenticación en un único componente sin repetir lógica en cada endpoint |
 | **JWT Utility** | `JwtUtils` | Centraliza la generación, validación y extracción de claims JWT. Si se cambia el algoritmo o la librería JWT, solo se modifica esta clase |
-| **Global Exception Handler** | `@RestControllerAdvice` | Devuelve respuestas de error estandarizadas ante credenciales inválidas, usernames duplicados o roles no reconocidos |
+| **Global Exception Handler** | `GlobalExceptionHandler` (`@RestControllerAdvice`) | Centraliza el manejo de errores: `BadCredentialsException` (401, login inválido), `IllegalArgumentException` (400, username/email duplicado o rol inválido) y `MethodArgumentNotValidException` (400, validación de `@Valid`), evitando manejo manual de errores en el controller |
 | **Dependency Injection** | Constructores + `@RequiredArgsConstructor` | Inyección por constructor garantiza inmutabilidad y facilita pruebas unitarias con mocks de Spring Security |
 | **Multi-stage Docker Build** | `Dockerfile` | Separa compilación (JDK) de runtime (JRE), reduciendo el tamaño de la imagen y la superficie de ataque |

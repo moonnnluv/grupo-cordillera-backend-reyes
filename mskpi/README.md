@@ -81,13 +81,16 @@ La API queda disponible en `http://localhost:8082`.
 ## Ejecución con Docker
 
 ```bash
-# Desde el directorio mskpi/
-docker compose up --build
+# Desde la raíz del monorepo (grupo-cordillera-backend-reyes/), donde vive docker-compose.yml
+cd grupo-cordillera-backend-reyes/
+docker compose up --build ms-kpi
 ```
 
-Levanta dos contenedores:
+Levanta dos contenedores (`ms-kpi` depende de `db-kpi`, que se levanta automáticamente):
 - `db-kpi` — MySQL 8.0 con volumen persistente `kpi-data`
 - `ms-kpi` — aplicación Spring Boot, espera a que la BD esté saludable
+
+Para levantar todo el sistema completo, omitir el nombre del servicio: `docker compose up --build`.
 
 ```bash
 docker compose down      # detener

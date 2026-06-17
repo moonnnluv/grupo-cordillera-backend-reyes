@@ -55,11 +55,12 @@ La API queda disponible en `http://localhost:8085`.
 ## Ejecución con Docker
 
 ```bash
-# Desde el directorio msbff/
-docker compose up --build
+# Desde la raíz del monorepo (grupo-cordillera-backend-reyes/), donde vive docker-compose.yml
+cd grupo-cordillera-backend-reyes/
+docker compose up --build ms-bff
 ```
 
-El contenedor `ms-bff` depende de `ms-datos`, `ms-kpi` y `ms-reportes` (arrancan en orden declarado).
+El contenedor `ms-bff` depende de `ms-datos`, `ms-kpi` y `ms-reportes` (arrancan en orden declarado). Para levantar todo el sistema completo, omitir el nombre del servicio: `docker compose up --build`.
 
 ```bash
 docker compose down

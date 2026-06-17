@@ -1,0 +1,20 @@
+# Repositorios del Proyecto — Grupo Cordillera
+# DSY1106 Desarrollo Fullstack III — Sección 001D
+# Integrante: Alejandra Reyes
+
+REPOSITORIO BACKEND
+URL: https://github.com/moonnnluv/grupo-cordillera-backend-reyes
+Descripción: Microservicios Spring Boot (ms-datos, ms-kpi, ms-reportes, ms-auth, ms-bff, api-gateway)
+             Orquestados con Docker Compose. Autenticación JWT + BCrypt.
+             Patrones: Repository Pattern, Factory Method + Strategy, Circuit Breaker.
+
+REPOSITORIO FRONTEND
+URL: https://github.com/moonnnluv/grupo-cordillera-frontend-reyes
+Descripción: Aplicación React 19 + Vite + Tailwind CSS.
+             Dashboards diferenciados por rol (ADMIN_GENERAL, ADMIN_SUCURSAL, VENDEDOR).
+             Consume API REST via API Gateway (:9090).
+
+REPOSITORIO DOCUMENTACIÓN
+URL: https://github.com/moonnnluv/grupo-cordillera-docs (crear si no existe)
+Descripción: Informe EA1, diagramas de arquitectura, informe de pruebas unitarias,
+             métricas SonarQube, descripción de persistencia.
